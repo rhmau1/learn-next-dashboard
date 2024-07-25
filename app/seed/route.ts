@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import { db } from '@vercel/postgres';
-import { invoices, customers, revenue, users } from '../lib/placeholder-data';
+import { invoices, customers, revenue, users, todos } from '../lib/placeholder-data';
 
 const client = await db.connect();
 
@@ -101,16 +101,43 @@ async function seedRevenue() {
   return insertedRevenue;
 }
 
+async function seedTodos() {
+  await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+
+  await client.sql`
+    CREATE TABLE IF NOT EXISTS todos (
+    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    task VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL,
+    status VARCHAR(6) NOT NULL DEFAULT 'undone'
+        CHECK (status IN ('done', 'undone'))
+    );
+  `;
+
+  const insertedTodos = await Promise.all(
+    todos.map(
+      (todo) => client.sql`
+        INSERT INTO todos (id, task, description, status)
+        VALUES (${todo.id}, ${todo.task}, ${todo.description}, ${todo.status})
+        ON CONFLICT (id) DO NOTHING;
+      `
+    )
+  );
+
+  return insertedTodos;
+}
+
 export async function GET() {
   // return Response.json({
   //   message: 'Uncomment this file and remove this line. You can delete this file when you are finished.',
   // });
   try {
     await client.sql`BEGIN`;
-    await seedUsers();
-    await seedCustomers();
-    await seedInvoices();
-    await seedRevenue();
+    // await seedUsers();
+    // await seedCustomers();
+    // await seedInvoices();
+    // await seedRevenue();
+    await seedTodos();
     await client.sql`COMMIT`;
 
     return Response.json({ message: 'Database seeded successfully' });

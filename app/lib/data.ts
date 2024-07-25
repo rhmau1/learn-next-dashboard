@@ -1,5 +1,5 @@
 import { sql } from '@vercel/postgres';
-import { CustomerField, CustomersTableType, InvoiceForm, InvoicesTable, LatestInvoiceRaw, Revenue } from './definitions';
+import { CustomerField, CustomersTableType, InvoiceForm, InvoicesTable, LatestInvoiceRaw, Revenue, Todos } from './definitions';
 import { formatCurrency } from './utils';
 
 export async function fetchRevenue() {
@@ -215,6 +215,18 @@ export async function fetchFilteredCustomers(query: string, currentPage: number)
     return customers;
   } catch (err) {
     console.error('Database Error:', err);
+    throw new Error('Failed to fetch customer table.');
+  }
+}
+
+export async function fetchTodos() {
+  try {
+    const data = await sql<Todos>`
+    SELECT * FROM todos
+    `;
+    return data.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
     throw new Error('Failed to fetch customer table.');
   }
 }

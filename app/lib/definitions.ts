@@ -86,3 +86,10 @@ export type InvoiceForm = {
   amount: number;
   status: 'pending' | 'paid';
 };
+
+export type Todos = {
+  id: string;
+  task: string;
+  description: string;
+  status: 'done' | 'undone';
+};

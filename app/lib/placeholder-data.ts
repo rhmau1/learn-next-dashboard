@@ -144,4 +144,37 @@ const revenue = [
   { month: 'Dec', revenue: 4800 },
 ];
 
-export { users, customers, invoices, revenue };
+const todos = [
+  {
+    id: '1e19bc6e-2d65-4d1b-80a8-094d8b8b4b98',
+    task: 'Buy groceries',
+    description: 'Buy milk, eggs, bread, and butter',
+    status: 'undone',
+  },
+  {
+    id: '2bfa5df7-3c36-4d61-9ed5-81d43c84c7b5',
+    task: 'Complete project report',
+    description: 'Finish the report by end of the day',
+    status: 'done',
+  },
+  {
+    id: '3c2f6e21-4d65-4d1b-80a8-094d8b8b4b56',
+    task: 'Call the plumber',
+    description: 'Fix the leak in the kitchen sink',
+    status: 'undone',
+  },
+  {
+    id: '4d3e7a32-5e76-4d1b-80a8-094d8b8b4b22',
+    task: 'Plan birthday party',
+    description: 'Arrange venue, cake, and invitations',
+    status: 'done',
+  },
+  {
+    id: '5e4f8b43-6f87-4d1b-80a8-094d8b8b4b78',
+    task: 'Clean the house',
+    description: 'Vacuum, dust, and mop all rooms',
+    status: 'undone',
+  },
+];
+
+export { users, customers, invoices, revenue, todos };

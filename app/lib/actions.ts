@@ -17,14 +17,30 @@ const FormSchema = z.object({
   }),
   date: z.string(),
 });
+const FormTodoSchema = z.object({
+  id: z.string(),
+  task: z.string().min(1, { message: 'Please input a task title.' }),
+  description: z.string().min(1, { message: 'Please input a description.' }),
+  status: z.enum(['undone', 'done'], {
+    invalid_type_error: 'Please select a todo status.',
+  }),
+});
 
 const CreateInvoice = FormSchema.omit({ id: true, date: true });
 const UpdateInvoice = FormSchema.omit({ id: true, date: true });
-
+const CreateTodo = FormTodoSchema.omit({ id: true });
 export type State = {
   errors?: {
     customerId?: string[];
     amount?: string[];
+    status?: string[];
+  };
+  message?: string | null;
+};
+export type TodoState = {
+  errors?: {
+    task?: string[];
+    description?: string[];
     status?: string[];
   };
   message?: string | null;
@@ -114,4 +130,31 @@ export async function deleteInvoice(id: string) {
       message: 'Database error: Failed to delete invoice',
     };
   }
+}
+
+export async function createTodo(prevState: TodoState, formData: FormData) {
+  const validatedFields = CreateTodo.safeParse({
+    task: formData.get('task'),
+    description: formData.get('description'),
+    status: formData.get('status'),
+  });
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Create Todo.',
+    };
+  }
+  const { task, description, status } = validatedFields.data;
+  try {
+    await sql`
+    INSERT INTO todos (task, description, status)
+    VALUES (${task}, ${description}, ${status})
+  `;
+  } catch (error) {
+    return {
+      message: 'Database error: Failed to create todo',
+    };
+  }
+  revalidatePath('/dashboard/todos');
+  redirect('/dashboard/todos');
 }

@@ -1,0 +1,5 @@
+akun untuk login: user@nextmail.com 123456
+untuk data dummy di placeholder-data.ts
+membuat fungsi untuk create table dan insert data di seed/route => run at http://localhost:3000/seed
+menambahkan side menu di nav-links
+menambahkan tampilan di ui 
